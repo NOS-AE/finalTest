@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:layout_margin="8dp"
+    >
+
+    <ImageView
+        android:id="@+id/kind_icon"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:background="@drawable/circle_bg"
+        android:backgroundTint="@color/colorTheme"
+        android:tint="@color/white"
+        android:scaleType="center"
+        android:contentDescription="@string/cd_kind_icon"
+        />
+
+    <TextView
+        android:id="@+id/kind_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:textSize="14sp"
+        android:textColor="@color/colorText"
+        android:text="吃喝"
+        />
+
+</LinearLayout>

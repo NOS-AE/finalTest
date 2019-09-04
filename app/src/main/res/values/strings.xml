@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">我的钱</string>
+
+    <string name="welcome_title">欢迎使用xx账本</string>
+    <string name="hint1">用户名/邮箱</string>
+    <string name="hint2">密码</string>
+    <string name="hint3">邮箱</string>
+    <string name="hint4">请输入邮箱</string>
+    <string name="hint5">请输入密码</string>
+    <string name="hint6">请输入验证码</string>
+    <string name="hint7">验证码</string>
+    <string name="hint8">记录花销 更记录生活…</string>
+    <string name="hint9">旧密码</string>
+    <string name="hint10">新密码</string>
+    <string name="login">登 \t录</string>
+    <string name="third_party">第三方登录</string>
+    <string name="register">立即注册</string>
+    <string name="income">收入</string>
+    <string name="expenditure">支出</string>
+    <string name="hint_money">金额</string>
+    <string name="next_step">下一步</string>
+    <string name="done">完成</string>
+    <string name="send_code">发送验证码</string>
+    <string name="email_register">邮箱注册</string>
+    <string name="set_password">设置密码</string>
+    <string name="remarks">备注</string>
+
+    <!-- contentDescription -->
+    <string name="cd_welcome">欢迎</string>
+    <string name="cd_data">统计数据</string>
+    <string name="cd_more">更多选项</string>
+    <string name="cd_qq">qq登录</string>
+    <string name="cd_wechat">微信登录</string>
+    <string name="cd_weibo">微博登录</string>
+    <string name="cd_close">关闭</string>
+    <string name="cd_confirm">确认</string>
+    <string name="cd_icon">图标</string>
+    <string name="cd_kind_icon">种类图标</string>
+    <string name="cd_calendar">日历</string>
+    <string name="cd_cam">照片</string>
+    <string name="cd_edit_info">编辑个人信息</string>
+
+    <!-- Menu title -->
+    <string name="menu_mine">我的</string>
+    <string name="menu_more">更多</string>
+    <string name="menu_statistics">统计数据</string>
+    <string name="menu_search_book">搜索账目</string>
+    <string name="menu_manage_book">管理账户</string>
+    <string name="menu_switch_book">切换账本</string>
+    <string name="menu_auto_account">自动记账</string>
+    <string name="menu_in_batches">批量管理</string>
+
+    <!-- Mine -->
+    <string name="mine1">每日记账提醒</string>
+    <string name="mine2">密码锁</string>
+    <string name="mine3">月报</string>
+    <string name="mine4">修改密码</string>
+    <string name="mine5">更换邮箱</string>
+    <string name="mine6">意见反馈</string>
+    <string name="logout">注销</string>
+
+    <!-- 货币符号 -->
+    <string name="cur_cny">¥</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

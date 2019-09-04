@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/colorTheme</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">@color/colorTheme</color>
+    <!-- xxxNum, Num代表透明度(不透明100)-->
+    <color name="colorTheme">#F5AB6F</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorTextHint">#888888</color>
+    <color name="colorText">#333</color>
+    <color name="colorNormalLine">#c5c5c5</color>
+    <color name="colorIcon95">#F26D6B6B</color>
+    <color name="colorIconPressed95">#F2959595</color>
+    <color name="colorBottomIcon">#515151</color>
+    <color name="colorKindIcon">#6D6B6B</color>
+    <color name="colorKindBg">#23CEC7C7</color>
+    <color name="shadow">#33000000</color>
+    <color name="colorLogout">#EE575C</color>
+
+    <color name="newItemText">#101010</color>
+    <color name="newItemDark">#6D6B6B</color>
+</resources>

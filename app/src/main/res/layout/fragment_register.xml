@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   tools:context=".ui.register.RegisterFragment"
+    >
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/register_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_return_24dp"
+        app:title="@string/email_register"
+        app:titleTextColor="@color/colorBottomIcon"
+        android:elevation="5dp"
+        />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/register_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/register_toolbar"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginTop="40dp"
+        android:textSize="18sp"
+        android:autofillHints="email"
+        tools:targetApi="O"
+        android:inputType="textEmailAddress"
+        android:hint="@string/hint4"
+        app:met_underlineColor="@color/colorTheme"
+        app:met_primaryColor="@color/colorTheme"
+        app:met_textColorHint="@color/colorTextHint"
+        app:met_textColor="@color/colorText"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/hint3"
+        />
+
+    <TextView
+        android:id="@+id/register_send_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/register_email"
+        app:layout_constraintBottom_toBottomOf="@id/register_email"
+        app:layout_constraintEnd_toEndOf="@id/register_email"
+        android:text="@string/send_code"
+        android:textColor="@color/colorTheme"
+        android:textSize="12sp"
+        />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/register_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/register_email"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:autofillHints="password"
+        tools:targetApi="O"
+        android:inputType="text"
+        android:hint="@string/hint6"
+        app:met_underlineColor="@color/colorTheme"
+        app:met_primaryColor="@color/colorTheme"
+        app:met_textColorHint="@color/colorTextHint"
+        app:met_textColor="@color/colorText"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/hint7"
+        app:met_maxCharacters="4"
+        />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/register_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/register_code"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:autofillHints="password"
+        tools:targetApi="O"
+        android:inputType="textPassword"
+        android:hint="@string/hint5"
+        app:met_underlineColor="@color/colorTheme"
+        app:met_primaryColor="@color/colorTheme"
+        app:met_textColorHint="@color/colorTextHint"
+        app:met_textColor="@color/colorText"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/hint2"
+        app:met_clearButton="true"
+        />
+
+    <Button
+        android:id="@+id/register_next_step"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toBottomOf="@id/register_password"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textColor="@color/white"
+        android:text="@string/next_step"
+        android:background="@drawable/bg_8dp_solid_theme"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

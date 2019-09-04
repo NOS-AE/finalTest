@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                     xmlns:tools="http://schemas.android.com/tools"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="match_parent"
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                     tools:context=".ui.mine.MineFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/mine_collapse"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="@color/colorTheme"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/mine_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="?attr/actionBarSize"
+                app:layout_collapseMode="parallax"
+                android:layout_marginBottom="60dp"
+                >
+
+                <org.fmod.finaltest.widget.RoundedImage
+                    android:id="@+id/mine_avatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="29dp"
+                    android:src="@drawable/ic_avatar"
+                    />
+
+                <TextView
+                    android:id="@+id/mine_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/mine_avatar"
+                    app:layout_constraintTop_toTopOf="@id/mine_avatar"
+                    app:layout_constraintBottom_toBottomOf="@id/mine_avatar"
+                    android:layout_marginStart="26dp"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:text="用户名"
+                    />
+
+                <ImageView
+                    android:id="@+id/mine_edit_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/mine_avatar"
+                    app:layout_constraintBottom_toBottomOf="@id/mine_avatar"
+                    android:layout_marginEnd="26dp"
+                    android:src="@drawable/ic_edit_info"
+                    android:tint="@color/white"
+                    android:contentDescription="@string/cd_edit_info"
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/mine_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_return_24dp_white"
+                />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:behavior_overlapTop="60dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_30dp_corner_top"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            >
+
+            <include layout="@layout/mine1" />
+
+            <include layout="@layout/mine2"/>
+
+            <include layout="@layout/mine3"/>
+
+            <include layout="@layout/mine4"/>
+
+            <include layout="@layout/mine5"/>
+
+            <include layout="@layout/mine6"/>
+            
+            <Button
+                android:id="@+id/mine_logout"
+                android:layout_width="313dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="120dp"
+                android:text="@string/logout"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_8dp_solid_theme"
+                android:backgroundTint="@color/colorLogout"
+                android:layout_gravity="center_horizontal"
+                />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/toolbar_more"
+        android:title="@string/menu_more"
+        android:icon="@drawable/ic_more_24dp"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/toolbar_search"
+                android:title="@string/menu_search_book"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/toolbar_manage"
+                android:title="@string/menu_manage_book"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/toolbar_switch"
+                android:title="@string/menu_switch_book"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/toolbar_auto"
+                android:title="@string/menu_auto_account"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/toolbar_batches"
+                android:title="@string/menu_in_batches"
+                app:showAsAction="never"/>
+        </menu>
+
+
+    </item>
+
+
+
+</menu>

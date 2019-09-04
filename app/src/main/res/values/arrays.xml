@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 大分类图标 -->
+    <integer-array name="bigkinds">
+        <item>@drawable/ic_menu_black_24dp</item>
+        <item>@drawable/ic_bigkind_clothes</item>
+        <item>@drawable/ic_bigkind_daily</item>
+        <item>@drawable/ic_bigkind_entertain</item>
+        <item>@drawable/ic_bigkind_learn</item>
+        <item>@drawable/ic_bigkind_makeup</item>
+        <item>@drawable/ic_bigkind_phone</item>
+        <item>@drawable/ic_bigkind_redpack</item>
+        <item>@drawable/ic_bigkind_supermarket</item>
+        <item>@drawable/ic_bigkind_taobao</item>
+        <item>@drawable/ic_bigkind_traffic_24dp</item>
+        <item>@drawable/ic_bigkind_water</item>
+    </integer-array>
+
+    <!-- 大分类名 -->
+    <string-array name="bigkinds_name">
+        <item>通用</item>
+        <item>服饰</item>
+        <item>日用</item>
+        <item>娱乐</item>
+        <item>学习</item>
+        <item>美妆</item>
+        <item>手机</item>
+        <item>红包</item>
+        <item>超市</item>
+        <item>淘宝</item>
+        <item>交通</item>
+        <item>水电</item>
+    </string-array>
+
+</resources>
