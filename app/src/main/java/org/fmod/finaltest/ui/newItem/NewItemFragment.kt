@@ -13,7 +13,6 @@ import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import com.jakewharton.rxbinding3.widget.textChangeEvents
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.fragment_new_item.*
-import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.R
 import org.fmod.finaltest.adapter.BigKindAdapter
 import org.fmod.finaltest.base.fragment.BaseFragment
@@ -21,9 +20,12 @@ import org.fmod.finaltest.bean.BigKind
 import org.fmod.finaltest.bean.DealItem
 import org.fmod.finaltest.bean.ItemMore
 import org.fmod.finaltest.bean.bus.ItemMoreDealItem
+import org.fmod.finaltest.bean.bus.NewItemDealItem
 import org.fmod.finaltest.ui.itemMore.ItemMoreFragment
+import org.fmod.finaltest.ui.main.MainFragment.Companion.RES_ITEM_OK
 import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.statusBarHeight
+import org.fmod.finaltest.widget.IncomeSwitch
 import org.fmod.finaltest.widget.PickerView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -31,14 +33,25 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+/**
+ * 处理New Item和Modify Item
+ */
+
 class NewItemFragment : BaseFragment(), NewItemContract.View {
 
     private lateinit var presenter: NewItemContract.Presenter
 
     private lateinit var timePicker: TimePickerView
 
-    private val dealItem = DealItem()
-    private var money = "0"
+    private lateinit var dealItem: DealItem
+
+    private var isNewItem = false
+
+    private var newItem = DealItem()
+
+    private lateinit var incomeSwitch: IncomeSwitch
+
+    private lateinit var money: String
 
     companion object{
         fun newInstance() = NewItemFragment()
@@ -78,33 +91,34 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
             .bindToLifecycle(this)
             .throttleFirst(1L, TimeUnit.SECONDS)
             .subscribe {
-                dealItem.money = this.money.toDouble()
-                presenter.createNewItem(dealItem)
-                pop()
+                newItem.isIncome = incomeSwitch.isIncome
+                if (this::money.isInitialized)
+                    newItem.money = money.toDouble()
+                log("newItem: $newItem")
+                if(isNewItem) {
+                    presenter.createNewItem(newItem)
+                    pop()
+                } else {
+                    dealItem.set(newItem)
+                    dealItem.update(dealItem.id)
+                    popWithResult()
+                }
             }
 
-        newItem_income.clicks()
-            .bindToLifecycle(this)
-            .subscribe {
-                newItem_expenditure.setTextColor(MyApp.appContext.getColor(R.color.newItemDark))
-                newItem_income.setTextColor(MyApp.appContext.getColor(R.color.colorTheme))
-                dealItem.isIncome = true
-            }
+        newItem_income.setOnClickListener {
+            incomeSwitch.setIncome()
+        }
 
-        newItem_expenditure.clicks()
-            .bindToLifecycle(this)
-            .subscribe {
-                newItem_income.setTextColor(MyApp.appContext.getColor(R.color.newItemDark))
-                newItem_expenditure.setTextColor(MyApp.appContext.getColor(R.color.colorTheme))
-                dealItem.isIncome = false
-            }
+        newItem_expenditure.setOnClickListener {
+            incomeSwitch.setExpenditure()
+        }
 
         newItem_remarks.clicks()
             .bindToLifecycle(this)
             .throttleFirst(1L, TimeUnit.SECONDS)
             .subscribe {
                 startFragment(ItemMoreFragment.newInstance())
-                EventBus.getDefault().postSticky(ItemMoreDealItem(dealItem))
+                EventBus.getDefault().postSticky(ItemMoreDealItem(newItem))
             }
 
     }
@@ -118,13 +132,32 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
         }
 
         timePicker = PickerView.getTimePicker(requireContext(), Calendar.getInstance()) {
-            dealItem.dateNum = it
+            log("selected Time $it")
+            newItem.dateNum = it
         }
 
+        /* Init View by newItem */
+        timePicker.setDate(Calendar.getInstance().apply {
+            time = newItem.dateNum
+        })
+        incomeSwitch = IncomeSwitch(newItem_income, newItem_expenditure, newItem.isIncome)
+
+        newItem_money.text = newItem.money.toString()
+
+        newItem_money_input.setText(newItem.money.toString())
+
+        newItem_bigKind.text = newItem.type
+
+        newItem_icon.run {
+            backgroundTintList = newItem.bigKind.bgColorRes
+            setImageResource(newItem.bigKind.iconResId)
+        }
+
+        presenter.loadBigKinds(newItem.bigKind)
     }
 
     override fun afterInitView() {
-        presenter.loadBigKinds()
+
     }
 
     override fun onDestroyView() {
@@ -132,15 +165,35 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
         super.onDestroyView()
     }
 
-    /* Bus */
+
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun handleItemMore(item: ItemMore) {
 
         log(item.remarks)
-        dealItem.run {
+        newItem.run {
             remarks = item.remarks
         }
+    }
 
+    /*
+        创建Item：接收到的NewItemDealItem内容为空
+        修改Item：接收到的NewItemDealItem内容为待修改Item
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
+    public fun handleItem(item: NewItemDealItem) {
+        EventBus.getDefault().removeStickyEvent(item)
+        isNewItem = if(item.item == null) {
+            true
+        } else {
+            dealItem = item.item
+            newItem.set(dealItem)
+            false
+        }
+    }
+
+    private fun popWithResult() {
+        setFragmentResult(RES_ITEM_OK, null)
+        pop()
     }
 
     /* NewItemContract.View Methods */
@@ -151,28 +204,23 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
 
     @SuppressLint("CheckResult")
     override fun showBigKinds(kindList: ArrayList<BigKind>) {
-
+        log("showBigKinds ${kindList[0].name}  ${kindList[0].selected}")
         val adapter = BigKindAdapter(kindList,
             {
                 newItem_icon.backgroundTintList = it.bgColorRes
                 newItem_icon.setImageResource(it.iconResId)
                 newItem_bigKind.text = it.name
-                dealItem.bigKind = it.copy()
+                newItem.bigKind = it
             },
-            0)
-        /*adapter.selectObservable
-            .bindToLifecycle(this)
-            .subscribe {
-
-            }*/
+            newItem.bigKind)
 
         newItem_kind.adapter = adapter
         newItem_kind.layoutManager = GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL, false)
 
     }
 
-    override fun showMoney(money: CharSequence) {
-        this.money = money.toString()
+    override fun showMoney(money: String) {
+        this.money = money
         newItem_money.text = money
     }
 

@@ -4,18 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Observable
+import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.bean.BigKind
+import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.widget.KindView
 import java.lang.ref.WeakReference
 
 class BigKindAdapter(
     private val mKindList: ArrayList<BigKind>,
     private val selectedCallback: (BigKind)->Unit,
-    initSelected: Int
+    initSelected: BigKind
 ): RecyclerView.Adapter<BigKindAdapter.ViewHolder>() {
 
     init {
-        KindView.selectedKind = mKindList[initSelected]
+        KindView.selectedKind = initSelected
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

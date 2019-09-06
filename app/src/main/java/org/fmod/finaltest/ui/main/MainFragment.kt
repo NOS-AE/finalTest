@@ -15,7 +15,11 @@ import org.fmod.finaltest.base.activity.BaseActivity
 import org.fmod.finaltest.base.fragment.BaseFragment
 import org.fmod.finaltest.bean.DealItem
 import org.fmod.finaltest.bean.MainListGroupInfo
+import org.fmod.finaltest.bean.bus.BatchDealItem
 import org.fmod.finaltest.bean.bus.MainDealItem
+import org.fmod.finaltest.bean.bus.NewItemDealItem
+import org.fmod.finaltest.ui.batch.BatchFragment
+import org.fmod.finaltest.ui.batch.BatchPresenter
 import org.fmod.finaltest.ui.books.BooksFragment
 import org.fmod.finaltest.ui.books.BooksPresenter
 import org.fmod.finaltest.ui.mine.MineFragment
@@ -25,6 +29,7 @@ import org.fmod.finaltest.ui.newItem.NewItemPresenter
 import org.fmod.finaltest.util.toplevel.dp2px
 import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.statusBarHeight
+import org.fmod.finaltest.widget.StaticView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -34,9 +39,24 @@ class MainFragment: BaseFragment(), MainContract.View {
 
     companion object{
         fun newInstance() = MainFragment()
+
+        private const val REQ_ITEM = 0
+        private const val REQ_BATCH = 1
+
+        const val RES_ITEM_OK = 1
+        const val RES_BATCH_OK = 2
     }
 
     lateinit var presenter: MainContract.Presenter
+
+    private lateinit var adapter: MainListAdapter
+
+    private lateinit var staticView: StaticView
+
+    private lateinit var dealItems: ArrayList<DealItem>
+
+    /* 记录要修改的Item索引，用于通知adapter更新 */
+    //private var modifyItemPos = 0
 
     override fun getLayoutId(): Int = R.layout.fragment_main
 
@@ -52,12 +72,12 @@ class MainFragment: BaseFragment(), MainContract.View {
             .throttleFirst(
             1L, TimeUnit.SECONDS)
             .subscribe {
-            val toStart = NewItemFragment.newInstance().apply {
-                injectPresenter(NewItemPresenter(this))
+                EventBus.getDefault().postSticky(NewItemDealItem(null))
+                startFragment(NewItemFragment.newInstance().apply {
+                    injectPresenter(NewItemPresenter(this))
+                })
+                //(activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
             }
-            startFragment(toStart)
-            //(activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
-        }
 
         //Toolbar里选择账本的TextView
         main_book.clicks().throttleFirst(
@@ -101,8 +121,6 @@ class MainFragment: BaseFragment(), MainContract.View {
 
             layoutParams.height += statusBarHeight
             setPadding(0, statusBarHeight,0,0)
-
-            presenter.loadItems()
         }
 
         main_fab.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
@@ -116,6 +134,7 @@ class MainFragment: BaseFragment(), MainContract.View {
                     }
                 })
 
+                main_list.addItemDecoration(decoration)
 
                 main_fab.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
@@ -123,11 +142,26 @@ class MainFragment: BaseFragment(), MainContract.View {
 
         all_statistics_container.setPadding(0, statusBarHeight, 0, 0)
 
+        staticView = StaticView(all_statistics_container)
+
+        presenter.loadItems()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_toolbar_menu,menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.main_batches -> {
+                EventBus.getDefault().postSticky(BatchDealItem(dealItems))
+                startFragmentForResult(BatchFragment.newInstance().apply {
+                    injectPresenter(BatchPresenter(this))
+                }, REQ_BATCH)
+            }
+        }
+        return true
     }
 
 
@@ -138,15 +172,48 @@ class MainFragment: BaseFragment(), MainContract.View {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun handleNewItem(event: MainDealItem) {
-        log(event.item.toString())
+        adapter.addNewItem(event.item)
+        staticView.notifyStaticsChange()
     }
 
+    override fun onFragmentResult(requestCode: Int, resultCode: Int, data: Bundle?) {
+        super.onFragmentResult(requestCode, resultCode, data)
+        //更新列表
+        when {
+            requestCode == REQ_ITEM && resultCode == RES_ITEM_OK -> {
+                adapter.modifyItem()
+                staticView.notifyStaticsChange()
+            }
+            requestCode == REQ_BATCH && resultCode == RES_BATCH_OK -> {
+                log("batch ok")
+                adapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    override fun onBackPressedSupport(): Boolean {
+        log("back")
+        return true
+        //return super.onBackPressedSupport()
+    }
+
+    /* MainContract.View Methods */
     override fun injectPresenter(presenter: MainContract.Presenter) {
         this.presenter = presenter
     }
 
     override fun showItems(items: ArrayList<DealItem>) {
-        main_list.adapter = MainListAdapter(items)
+        dealItems = items
+        staticView.items = items
+        staticView.notifyStaticsChange()
+        adapter = MainListAdapter(items) {
+            //modifyItemPos = adapter.getPosition(it)
+            EventBus.getDefault().postSticky(NewItemDealItem(it))
+            startFragmentForResult(NewItemFragment.newInstance().apply {
+                injectPresenter(NewItemPresenter(this))
+            }, REQ_ITEM)
+        }
+        main_list.adapter = adapter
         main_list.layoutManager = LinearLayoutManager(context)
     }
 

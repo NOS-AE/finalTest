@@ -73,6 +73,7 @@ class ItemMoreFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
     public fun handleDealItem(item: ItemMoreDealItem) {
         EventBus.getDefault().removeStickyEvent(item)
+        EventBus.getDefault().removeStickyEvent(item)
         val deal = item.item
         this.item = ItemMore().apply {
             remarks = deal.remarks

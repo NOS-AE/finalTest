@@ -1,5 +1,6 @@
 package org.fmod.finaltest.helper.local
 
+import android.annotation.SuppressLint
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -16,9 +17,20 @@ class LocalHelper {
 
         //第一次启动App时，先创建固定的大分类
         fun firstApp(){
+
             LitePal.saveAll(getFixedBigKinds())
 
             Book().save()
+        }
+
+        @SuppressLint("CheckResult")
+        fun init() {
+            Observable.just(ArrayList(LitePal.findAll(BigKind::class.java)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    MyApp.bigKinds = it
+                }
         }
 
         /**
@@ -66,6 +78,18 @@ class LocalHelper {
             return Observable.just(ArrayList(LitePal.findAll(DealItem::class.java)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .doOnNext { list ->
+                    list.sortByDescending {
+                        it.dateNum
+                    }
+                    //通过大分类名字
+                    //将Item与大分类关联起来
+                    for(i in list){
+                        i.bigKind = MyApp.bigKinds.find {
+                            it.name == i.type
+                        } as BigKind
+                    }
+                }
         }
 
     }

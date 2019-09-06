@@ -42,16 +42,15 @@ class DealDecoration(
          */
         val itemCount = state.itemCount
         val pos = parent.getChildAdapterPosition(view)
-        outRect.bottom = if(itemCount > 0 && pos == itemCount - 1) mBottomOffset else 0
+        if(pos == itemCount - 1) outRect.bottom = mBottomOffset
 
-
-        if(pos > 0){
+        /*if(pos > 0){
             val groupInfo = callback.getGroupInfo(pos - 1)
             outRect.top = if(groupInfo.isFirstInGroup()) mHeaderHeight else 0
-        }
+        }*/
     }
 
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+    /*override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
         val chileCount = parent.childCount
         var view: View
@@ -112,7 +111,7 @@ class DealDecoration(
         val titleY = bottom - mFontMetrics.descent
         //绘制title
         c.drawText(info.title, titleX.toFloat(),titleY,mTextPaint)
-    }
+    }*/
 
     interface Callback{
         /**

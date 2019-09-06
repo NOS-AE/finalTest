@@ -1,11 +1,19 @@
 package org.fmod.finaltest.util.excel
 
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.apache.poi.hssf.usermodel.*
+import org.fmod.finaltest.bean.DealItem
 import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.poiLog
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.reflect.Method
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.logging.SimpleFormatter
+import kotlin.collections.ArrayList
 
 /**
  * 一个Maker对应一个工作簿
@@ -16,24 +24,25 @@ class ExcelMaker {
         const val pattern = "yyyy-MM-dd"
 
         //创建新实例
-        fun newInstance() = ExcelMaker()
-
-        fun newInstance(workBook: HSSFWorkbook) = ExcelMaker().apply {
-            mWorkBook = workBook
+        fun newInstance() = ExcelMaker().apply {
+            mWorkBook = HSSFWorkbook()
         }
 
     }
 
-    lateinit var mWorkBook: HSSFWorkbook
-    lateinit var mHeaderStyle: HSSFCellStyle
-    lateinit var mDataStyle: HSSFCellStyle
+    private lateinit var mWorkBook: HSSFWorkbook
+    private lateinit var mHeaderStyle: HSSFCellStyle
+    private lateinit var mDataStyle: HSSFCellStyle
 
-    fun <T: Any>createSheet(title: String, headers: List<String>, dataSet: ArrayList<T>) {
-        if(!this::mWorkBook.isInitialized){
-            poiLog("mWorkBook hasn't been initialized")
-            return
-        }
-        createSheet(title, headers, dataSet, PredefinedExcel.createHeaderCellStyle(mWorkBook), PredefinedExcel.createDataCellStyle(mWorkBook))
+    fun createSheet(title: String, headers: List<String>, dataSet: List<DealItem>): ExcelMaker {
+        createSheet(
+            title,
+            headers,
+            dataSet,
+            PredefinedExcel.createHeaderCellStyle(mWorkBook),
+            PredefinedExcel.createDataCellStyle(mWorkBook)
+        )
+        return this
     }
 
     /**
@@ -51,11 +60,8 @@ class ExcelMaker {
      * @param dataStyle
      *          自定义的data风格
      */
-    fun <T: Any>createSheet(title: String, headers: List<String>, dataSet: ArrayList<T>, headerStyle: HSSFCellStyle, dataStyle: HSSFCellStyle){
-        if(!this::mWorkBook.isInitialized){
-            poiLog("mWorkBook hasn't been initialized")
-            return
-        }
+    private fun createSheet(title: String, headers: List<String>, dataSet: List<DealItem>, headerStyle: HSSFCellStyle, dataStyle: HSSFCellStyle){
+
         mHeaderStyle = headerStyle
         mDataStyle = dataStyle
         //创建表格
@@ -72,9 +78,9 @@ class ExcelMaker {
     /**
      * 创建标题行
      */
-    fun createHeadersRow(headers: List<String>, sheet: HSSFSheet){
+    private fun createHeadersRow(headers: List<String>, sheet: HSSFSheet){
         val row = sheet.createRow(0)
-        for(i in 0 until headers.size){
+        for(i in headers.indices){
             row.createCell(i).apply {
                 setCellStyle(mHeaderStyle)
                 setCellValue(headers[i])
@@ -84,22 +90,19 @@ class ExcelMaker {
 
     /**
      * 创建数据行
-     * 利用反射，根据javaBean属性先后顺序，调用getXxx()方法得到属性值
      */
-    fun <T: Any>createDataRow(data: ArrayList<T>, sheet: HSSFSheet){
+    private fun createDataRow(data: List<DealItem>, sheet: HSSFSheet){
         var row: HSSFRow
-        var methods: Array<Method>
-        var value: Any
-        for(i in 1..data.size){
-            row = sheet.createRow(i)
-            //遍历所有方法，只使用getter
-            methods = data[i].javaClass.methods
-            for (column in 0 until methods.size){
-                if(isGetter(methods[column])){
-                    value = methods[column].invoke(data[i])
-                    setCellValue(value, row, column)
-                }
-            }
+        val format = SimpleDateFormat(pattern, Locale.CHINA)
+        for(i in data.indices){
+            row = sheet.createRow(i+1)
+
+            setCellValue(data[i].type, row, 0)
+            setCellValue(format.format(data[i].dateNum), row, 1)
+            setCellValue(if(data[i].isIncome) "收入" else "支出", row, 2)
+            setCellValue(data[i].money, row, 3)
+            setCellValue(data[i].remarks, row, 4)
+
         }
     }
 
@@ -129,23 +132,23 @@ class ExcelMaker {
      * @param filePath
      *            本地文件路径
      * */
-    fun export(filePath: String){
-        try {
+    fun export(filePath: String): Observable<String>{
+        return Observable.create<String> {
             val fos = FileOutputStream(filePath)
             mWorkBook.write(fos)
             fos.close()
-        }catch (e: IOException){
-            log("ExcelMaker export: ${e.message}")
+            it.onNext(filePath)
         }
-
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     /**
      * 创建标题行
      * test
      */
-    fun createHeadersRowTest(headers: List<String>){
-        for(i in 0 until headers.size){
+    /*private fun createHeadersRowTest(headers: List<String>){
+        for(i in headers.indices){
             log("h:${headers[i]}, c:$i")
         }
     }
@@ -155,7 +158,7 @@ class ExcelMaker {
      * 利用反射，根据javaBean属性先后顺序，调用getXxx()方法得到属性值
      * test
      */
-    fun <T: Any>createDataRowTest(data: ArrayList<T>){
+    private fun <T: Any>createDataRowTest(data: ArrayList<T>){
         var methods: Array<Method>
         var value: Any
         for(i in 0 until data.size){
@@ -169,5 +172,5 @@ class ExcelMaker {
                 }
             }
         }
-    }
+    }*/
 }

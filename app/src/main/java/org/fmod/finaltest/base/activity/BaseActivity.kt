@@ -13,6 +13,7 @@ import me.yokeyword.fragmentation.anim.FragmentAnimator
 import org.fmod.finaltest.R
 import org.fmod.finaltest.base.BasePresenter
 import org.fmod.finaltest.manager.ActivityManager
+import org.fmod.finaltest.util.toplevel.log
 
 abstract class BaseActivity: RxAppCompatActivity(), ISupportActivity, IBaseUniversal{
     companion object{
@@ -73,11 +74,12 @@ abstract class BaseActivity: RxAppCompatActivity(), ISupportActivity, IBaseUnive
      * 请尽量复写该方法,避免复写onBackPress(),以保证SupportFragment内的onBackPressedSupport()回退事件正常执行
      */
     override fun onBackPressedSupport() {
+        log("activity back")
         mDelegate.onBackPressedSupport()
     }
 
     override fun onBackPressed() {
-        mDelegate.onBackPressedSupport()
+        onBackPressedSupport()
     }
 
     /**

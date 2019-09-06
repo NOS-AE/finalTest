@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.kind_item.view.*
 import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.R
 import org.fmod.finaltest.bean.BigKind
+import org.fmod.finaltest.util.toplevel.log
 import java.lang.ref.WeakReference
 
 class KindView(layoutInflater: LayoutInflater, container: ViewGroup?) {
@@ -26,7 +27,7 @@ class KindView(layoutInflater: LayoutInflater, container: ViewGroup?) {
             ContextCompat.getColorStateList(MyApp.appContext, R.color.colorKindBg)
         }
 
-        lateinit var selectedView: WeakReference<View>
+        private lateinit var selectedView: WeakReference<View>
         lateinit var selectedKind: BigKind
 
     }
@@ -35,6 +36,25 @@ class KindView(layoutInflater: LayoutInflater, container: ViewGroup?) {
 
     @SuppressLint("CheckResult")
     fun bind(kind: BigKind, selectedCallback: (BigKind)->Unit){
+
+        view.run {
+            /*
+                被选中的图标，icon和bg颜色为bean的值
+                未选中的图标，icon和bg颜色为默认值
+             */
+            if(kind.selected) {
+                kind_icon.backgroundTintList = kind.bgColorRes
+                kind_icon.imageTintList = selectedIconColor
+                selectedView = WeakReference(this)
+            }
+            else{
+                kind_icon.backgroundTintList = defaultBgColor
+                kind_icon.imageTintList = defaultIconColor
+            }
+
+            kind_icon.setImageResource(kind.iconResId)
+            kind_name.text = kind.name
+        }
 
         view.clicks()
             .filter {
@@ -58,25 +78,6 @@ class KindView(layoutInflater: LayoutInflater, container: ViewGroup?) {
                 selectedCallback(kind)
             }
 
-
-        view.run {
-            /*
-                被选中的图标，icon和bg颜色为bean的值
-                未选中的图标，icon和bg颜色为默认值
-             */
-            if(kind.selected) {
-                kind_icon.backgroundTintList = kind.bgColorRes
-                kind_icon.imageTintList = selectedIconColor
-                selectedView = WeakReference(this)
-            }
-            else{
-                kind_icon.backgroundTintList = defaultBgColor
-                kind_icon.imageTintList = defaultIconColor
-            }
-
-            kind_icon.setImageResource(kind.iconResId)
-            kind_name.text = kind.name
-        }
     }
 
 }

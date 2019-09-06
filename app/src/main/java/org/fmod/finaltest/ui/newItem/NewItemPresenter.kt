@@ -6,6 +6,7 @@ import com.jakewharton.rxbinding3.widget.TextViewAfterTextChangeEvent
 import com.jakewharton.rxbinding3.widget.TextViewTextChangeEvent
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import org.fmod.finaltest.MyApp
+import org.fmod.finaltest.bean.BigKind
 import org.fmod.finaltest.bean.DealItem
 import org.fmod.finaltest.bean.bus.MainDealItem
 import org.fmod.finaltest.helper.local.LocalHelper
@@ -27,19 +28,14 @@ class NewItemPresenter(
     }
 
     @SuppressLint("CheckResult")
-    override fun loadBigKinds() {
+    override fun loadBigKinds(selectedKind: BigKind) {
 
-        try {
-            mView.showBigKinds(MyApp.bigKinds)
-        } catch (e: UninitializedPropertyAccessException) {
-            LocalHelper.loadBigKinds()
-                .bindToLifecycle(mView)
-                .subscribe {
-                    it[0].selected = true
-                    MyApp.bigKinds = it
-                    mView.showBigKinds(it)
-                }
+        val finalSelected = MyApp.bigKinds.find {
+            it.selected
         }
+        finalSelected?.selected = false
+        selectedKind.selected = true
+        mView.showBigKinds(MyApp.bigKinds)
 
     }
 
@@ -78,13 +74,11 @@ class NewItemPresenter(
                 log("change modify $res")
                 afterMoneyModify = true*/
             if(moneyModify) {
-                log("modify")
                 mView.modifyMoneyInput(res)
             }
             else {
-                log("show")
                 if(res.isEmpty()) res = "0"
-                mView.showMoney(res)
+                mView.showMoney(res.toString())
             }
 
             /*}else {
@@ -116,11 +110,9 @@ class NewItemPresenter(
                 log("after modify $res")
                 afterMoneyModify = true*/
             if(moneyModify) {
-                log("modify")
                 mView.modifyMoneyInput(res)
             }
             else {
-                log("show")
                 if(res.isEmpty()) res = "0"
                 mView.showMoney(res)
             }
@@ -133,6 +125,7 @@ class NewItemPresenter(
 
     override fun createNewItem(item: DealItem) {
 
+        log("post new item $item")
         EventBus.getDefault().post(MainDealItem(item))
         item.save()
 

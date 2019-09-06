@@ -9,23 +9,23 @@
 
         <menu>
             <item
-                android:id="@+id/toolbar_search"
+                android:id="@+id/main_search"
                 android:title="@string/menu_search_book"
                 app:showAsAction="never"/>
             <item
-                android:id="@+id/toolbar_manage"
+                android:id="@+id/main_manage"
                 android:title="@string/menu_manage_book"
                 app:showAsAction="never"/>
             <item
-                android:id="@+id/toolbar_switch"
+                android:id="@+id/main_switch"
                 android:title="@string/menu_switch_book"
                 app:showAsAction="never"/>
             <item
-                android:id="@+id/toolbar_auto"
+                android:id="@+id/main_auto"
                 android:title="@string/menu_auto_account"
                 app:showAsAction="never"/>
             <item
-                android:id="@+id/toolbar_batches"
+                android:id="@+id/main_batches"
                 android:title="@string/menu_in_batches"
                 app:showAsAction="never"/>
         </menu>

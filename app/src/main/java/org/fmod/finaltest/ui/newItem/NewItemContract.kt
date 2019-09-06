@@ -15,12 +15,12 @@ interface NewItemContract {
 
         fun modifyMoneyInput(money: CharSequence)
 
-        fun showMoney(money: CharSequence)
+        fun showMoney(money: String)
     }
 
     interface Presenter: BasePresenter {
 
-        fun loadBigKinds()
+        fun loadBigKinds(selectedKind: BigKind)
 
         fun listenMoneyChange(
             onChange: InitialValueObservable<TextViewTextChangeEvent>,

@@ -7,7 +7,7 @@ import org.fmod.finaltest.util.toplevel.dp2px
 
 private val halfDistance = dp2px(15f)
 private val distance = dp2px(30f)
-private val topDistance = dp2px(5f)
+private val topDistance = dp2px(15f)
 
 class BookDecoration: RecyclerView.ItemDecoration() {
 

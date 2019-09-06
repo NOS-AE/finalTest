@@ -172,6 +172,8 @@ abstract class BaseFragment: RxFragment(), ISupportFragment, IBaseUniversal {
 
     protected fun startFragment(toFragment: ISupportFragment, launchMode: Int) = mDelegate.start(toFragment, launchMode)
 
+    protected fun startFragmentForResult(toFragment: ISupportFragment, requestCode: Int) = mDelegate.startForResult(toFragment, requestCode)
+
     override fun onBackPressedSupport(): Boolean = mDelegate.onBackPressedSupport()
 
     override fun setFragmentResult(resultCode: Int, bundle: Bundle?) = mDelegate.setFragmentResult(resultCode, bundle)

@@ -27,7 +27,7 @@ class MyApp : Application(){
             avatar = ""
         }
 
-        //大分类
+        //大分类（所有Item将引用此唯一列表中元素）
         lateinit var bigKinds: ArrayList<BigKind>
         //账本
         lateinit var books: ArrayList<Book>
@@ -76,6 +76,7 @@ class MyApp : Application(){
             PreferenceHelper.setFirstApp(false)
             LocalHelper.firstApp()
         }
+        LocalHelper.init()
     }
 
 }

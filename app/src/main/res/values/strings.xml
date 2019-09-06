@@ -24,6 +24,10 @@
     <string name="email_register">邮箱注册</string>
     <string name="set_password">设置密码</string>
     <string name="remarks">备注</string>
+    <string name="batch_title">批量管理</string>
+    <string name="move_to">移动到</string>
+    <string name="delete">删除</string>
+    <string name="export">导出</string>
 
     <!-- contentDescription -->
     <string name="cd_welcome">欢迎</string>
