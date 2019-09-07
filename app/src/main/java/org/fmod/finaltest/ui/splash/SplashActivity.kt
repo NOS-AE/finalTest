@@ -40,13 +40,6 @@ class SplashActivity : BaseActivity(), SplashContract.View {
         presenter = SplashPresenter(this)
 
         requestPermissions(permissions, 0)
-        for(i in permissions) {
-            if(checkSelfPermission(i) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(permissions, 0)
-                break
-            }
-        }
-        presenter.tryLogin()
     }
 
     override fun getLayoutId(): Int = R.layout.activity_splash
@@ -76,6 +69,7 @@ class SplashActivity : BaseActivity(), SplashContract.View {
                     if (it != PackageManager.PERMISSION_GRANTED) {
                         toast("请开启所有权限")
                         finish()
+                        return
                     }
                 }
                 //权限都已经开启

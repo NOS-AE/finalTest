@@ -77,6 +77,9 @@ class RemoteHelper {
             return ServiceProvider.loginService().login(email, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext {
+                    MyApp.token = it.token
+                }
 
         }
 

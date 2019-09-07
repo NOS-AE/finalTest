@@ -11,9 +11,6 @@ import org.reactivestreams.Subscription
 
 
 class MainActivity : BaseActivity() {
-    companion object {
-        const val TAG = "MyApp"
-    }
 
     override fun beforeSetContentView() {
         ActivityManager.finishOnActivityCreate(this)

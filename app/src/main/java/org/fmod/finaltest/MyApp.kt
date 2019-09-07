@@ -19,6 +19,7 @@ class MyApp : Application(){
     companion object{
         lateinit var appContext: Context
 
+        //由RemoteHelper内部赋值
         lateinit var token: String
 
         //一个App只同时登录一个User

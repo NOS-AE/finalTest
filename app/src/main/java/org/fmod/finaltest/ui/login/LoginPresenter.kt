@@ -48,7 +48,6 @@ class LoginPresenter(
             }
             .subscribe(object : RemoteObserver<LoginCode>() {
                 override fun onNext(t: LoginCode) {
-                    MyApp.token = t.token
                     PreferenceHelper.saveMailLogin(email, password)
                     PreferenceHelper.setLoginWay(PreferenceHelper.wayEmail)
                     mView.finishLogin()
@@ -88,8 +87,6 @@ class LoginPresenter(
             .bindToLifecycle(mView)
             .doOnNext {
                 MyApp.globalUser = it
-                mView.finishLogin()
-                mView.hideProgress()
             }
             .observeOn(Schedulers.io())
             .flatMap {
@@ -97,18 +94,27 @@ class LoginPresenter(
                 PreferenceHelper.saveQQLogin(RemoteQQ.getOpenId())
                 RemoteHelper.loginQQ(RemoteQQ.getOpenId())
             }
+            .doOnNext {
+                if(it.state == 200) {
+                    mView.finishLogin()
+                    mView.hideProgress()
+                }
+            }
             .filter {
                 it.state == 201
             }
             .flatMap {
                 val params = HashMap<String, String>().apply {
                     put("username", MyApp.globalUser.name)
+                    put("token", MyApp.token)
                 }
                 RemoteHelper.uploadQQInfo(params)
             }
             .subscribe(object: RemoteObserver<Code>() {
                 override fun onNext(t: Code) {
                     //2001 未调用第一个api（未登录）
+                    mView.finishLogin()
+                    mView.hideProgress()
                 }
 
                 override fun onError(e: Throwable) {

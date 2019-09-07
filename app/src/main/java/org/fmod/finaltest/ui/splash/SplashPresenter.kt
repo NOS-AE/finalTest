@@ -50,7 +50,6 @@ class SplashPresenter(
                         }
                         .subscribe(object : RemoteObserver<LoginCode>() {
                             override fun onNext(t: LoginCode) {
-                                MyApp.token = t.token
                                 mView.finishLogin(true)
                             }
 
