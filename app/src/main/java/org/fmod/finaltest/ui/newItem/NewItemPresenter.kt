@@ -125,7 +125,6 @@ class NewItemPresenter(
 
     override fun createNewItem(item: DealItem) {
 
-        log("post new item $item")
         EventBus.getDefault().post(MainDealItem(item))
         item.save()
 

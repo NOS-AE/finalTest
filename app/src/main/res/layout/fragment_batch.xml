@@ -45,6 +45,7 @@
             android:textColor="@color/colorTheme"
             android:textSize="16sp"
             android:text="@string/move_to"
+            android:enabled="false"
             />
 
         <TextView
@@ -57,7 +58,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:textColor="@color/colorTheme"
             android:textSize="16sp"
-            android:text="@string/delete"/>
+            android:text="@string/delete"
+            android:enabled="false"
+            />
 
         <TextView
             android:id="@+id/batch_export"
@@ -70,6 +73,7 @@
             android:textColor="@color/colorTheme"
             android:textSize="16sp"
             android:text="@string/export"
+            android:enabled="false"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

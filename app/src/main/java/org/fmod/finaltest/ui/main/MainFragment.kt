@@ -18,6 +18,7 @@ import org.fmod.finaltest.bean.MainListGroupInfo
 import org.fmod.finaltest.bean.bus.BatchDealItem
 import org.fmod.finaltest.bean.bus.MainDealItem
 import org.fmod.finaltest.bean.bus.NewItemDealItem
+import org.fmod.finaltest.bean.bus.StaDealItems
 import org.fmod.finaltest.ui.batch.BatchFragment
 import org.fmod.finaltest.ui.batch.BatchPresenter
 import org.fmod.finaltest.ui.books.BooksFragment
@@ -26,6 +27,7 @@ import org.fmod.finaltest.ui.mine.MineFragment
 import org.fmod.finaltest.ui.mine.MinePresenter
 import org.fmod.finaltest.ui.newItem.NewItemFragment
 import org.fmod.finaltest.ui.newItem.NewItemPresenter
+import org.fmod.finaltest.ui.statistics.StaFragment
 import org.fmod.finaltest.util.toplevel.dp2px
 import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.statusBarHeight
@@ -93,7 +95,8 @@ class MainFragment: BaseFragment(), MainContract.View {
             when(it.itemId){
                 //启动统计数据界面
                 R.id.statistics -> {
-
+                    //EventBus.getDefault().postSticky(StaDealItems(dealItems))
+                    startFragment(StaFragment.newInstance(dealItems))
                 }
                 //启动我的界面
                 R.id.mine -> {

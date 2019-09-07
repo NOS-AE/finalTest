@@ -21,12 +21,14 @@ import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.poiLog
 import org.fmod.finaltest.util.toplevel.statusBarHeight
 import org.fmod.finaltest.util.toplevel.toast
+import org.fmod.finaltest.widget.BatchViewController
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.properties.Delegates
 
 class BatchFragment : BaseFragment(), BatchContract.View {
 
@@ -40,7 +42,11 @@ class BatchFragment : BaseFragment(), BatchContract.View {
 
     private lateinit var adapter: BatchAdapter
 
-    private var selectedCount = 0
+    private var selectedCount by Delegates.observable(0){ _, old, new ->
+        batchViewController.updateView(old, new)
+    }
+
+    private lateinit var batchViewController: BatchViewController
 
     private val excelHeader = listOf("大分类","交易日期","收支类型","金额","备注")
 
@@ -87,20 +93,23 @@ class BatchFragment : BaseFragment(), BatchContract.View {
         adapter = BatchAdapter(dealItems) { _, isCheck ->
             if(isCheck) {
                 selectedCount++
+                log("selected add :$selectedCount")
             } else {
                 selectedCount--
+                log("selected sub :$selectedCount")
             }
-            val title = "已选择${selectedCount}项"
-            batch_toolbar.title = title
+            /*val title = "已选择${selectedCount}项"
+            batch_toolbar.title = title*/
         }
         batch_list.adapter = adapter
         batch_list.layoutManager = LinearLayoutManager(context)
-    }
 
-    override fun onBackPressedSupport(): Boolean {
-        log("pop with result")
-        //popWithResult()
-        return true
+        batchViewController = BatchViewController(
+            batch_toolbar,
+            batch_moveTo,
+            batch_delete,
+            batch_export
+        )
     }
 
 
@@ -133,6 +142,11 @@ class BatchFragment : BaseFragment(), BatchContract.View {
                 false
             }
         }
+
+        selectedCount = 0
+        log("selected zero :$selectedCount")
+        /*val title = "已选择${selectedCount}项"
+        batch_toolbar.title = title*/
         adapter.notifyDataSetChanged()
     }
 

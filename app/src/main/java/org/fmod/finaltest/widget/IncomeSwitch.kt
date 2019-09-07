@@ -7,6 +7,7 @@ import org.fmod.finaltest.R
 class IncomeSwitch(
     private val incomeView: TextView,
     private val expenditureView: TextView,
+    private val switchCallback: (Boolean)->Unit,
     var isIncome: Boolean = false
 ) {
 
@@ -14,6 +15,7 @@ class IncomeSwitch(
     private val defaultColor = MyApp.appContext.getColor(R.color.newItemDark)
 
     init {
+
         if(isIncome) {
             incomeView.setTextColor(selectedColor)
             expenditureView.setTextColor(defaultColor)
@@ -21,26 +23,31 @@ class IncomeSwitch(
             incomeView.setTextColor(defaultColor)
             expenditureView.setTextColor(selectedColor)
         }
-    }
 
-    fun setIncome() {
-        if(isIncome) {
-            return
+        incomeView.setOnClickListener {
+
+            if(isIncome) {
+                return@setOnClickListener
+            }
+
+            incomeView.setTextColor(selectedColor)
+            expenditureView.setTextColor(defaultColor)
+            isIncome = true
+            switchCallback(isIncome)
         }
 
-        incomeView.setTextColor(selectedColor)
-        expenditureView.setTextColor(defaultColor)
-        isIncome = true
-    }
+        expenditureView.setOnClickListener {
 
-    fun setExpenditure() {
-        if(!isIncome){
-            return
+            if(!isIncome){
+                return@setOnClickListener
+            }
+
+            incomeView.setTextColor(defaultColor)
+            expenditureView.setTextColor(selectedColor)
+            isIncome = false
+            switchCallback(isIncome)
         }
-
-        incomeView.setTextColor(defaultColor)
-        expenditureView.setTextColor(selectedColor)
-        isIncome = false
     }
+
 
 }

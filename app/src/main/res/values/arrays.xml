@@ -31,5 +31,26 @@
         <item>交通</item>
         <item>水电</item>
     </string-array>
+    
+    <!-- 统计 -->
+    <string-array name="sta_time">
+        <item>年</item>
+        <item>月</item>
+    </string-array>
+    
+    <array name="icon_colors">
+        <item>#ef5b9c</item>
+        <item>#d93a49</item>
+        <item>#deab8a</item>
+        <item>#87481f</item>
+        <item>#fdb933</item>
+        <item>#fcf16e</item>
+        <item>#b2d235</item>
+        <item>#5c7a29</item>
+        <item>#1d953f</item>
+        <item>#009ad6</item>
+        <item>#7bbfea</item>
+        <item>#444693</item>
+    </array>
 
 </resources>

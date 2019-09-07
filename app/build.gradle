@@ -37,16 +37,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation files('libs/poishadow-all.jar')
-    implementation('com.deepoove:poi-tl:1.5.0') {
-        //在Android 中 poi-tl 所依赖的库会导致无法编译
-        //所以只使用 poi-tl 的填充功能
-        //然后使用其他作者提供的 poi
-        //下面是过滤掉 poi-tl 的依赖库
-        exclude group: 'org.apache.xmlbeans', module: 'xmlbeans'
-        exclude group: 'org.apache.poi', module: 'poi-ooxml'
-        exclude group: 'org.apache.poi', module: 'poi-ooxml-schemas'
-        exclude group: 'org.apache.poi', module: 'poi'
-    }
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
@@ -68,6 +58,7 @@ dependencies {
     kapt 'org.greenrobot:eventbus-annotation-processor:3.1.1'
 
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 }
 
 kapt {

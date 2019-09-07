@@ -23,7 +23,6 @@ import org.fmod.finaltest.bean.bus.ItemMoreDealItem
 import org.fmod.finaltest.bean.bus.NewItemDealItem
 import org.fmod.finaltest.ui.itemMore.ItemMoreFragment
 import org.fmod.finaltest.ui.main.MainFragment.Companion.RES_ITEM_OK
-import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.statusBarHeight
 import org.fmod.finaltest.widget.IncomeSwitch
 import org.fmod.finaltest.widget.PickerView
@@ -94,7 +93,6 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
                 newItem.isIncome = incomeSwitch.isIncome
                 if (this::money.isInitialized)
                     newItem.money = money.toDouble()
-                log("newItem: $newItem")
                 if(isNewItem) {
                     presenter.createNewItem(newItem)
                     pop()
@@ -104,14 +102,6 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
                     popWithResult()
                 }
             }
-
-        newItem_income.setOnClickListener {
-            incomeSwitch.setIncome()
-        }
-
-        newItem_expenditure.setOnClickListener {
-            incomeSwitch.setExpenditure()
-        }
 
         newItem_remarks.clicks()
             .bindToLifecycle(this)
@@ -132,7 +122,6 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
         }
 
         timePicker = PickerView.getTimePicker(requireContext(), Calendar.getInstance()) {
-            log("selected Time $it")
             newItem.dateNum = it
         }
 
@@ -140,7 +129,10 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
         timePicker.setDate(Calendar.getInstance().apply {
             time = newItem.dateNum
         })
-        incomeSwitch = IncomeSwitch(newItem_income, newItem_expenditure, newItem.isIncome)
+
+        incomeSwitch = IncomeSwitch(newItem_income, newItem_expenditure, {
+
+        })
 
         newItem_money.text = newItem.money.toString()
 
@@ -169,7 +161,6 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public fun handleItemMore(item: ItemMore) {
 
-        log(item.remarks)
         newItem.run {
             remarks = item.remarks
         }
@@ -204,7 +195,6 @@ class NewItemFragment : BaseFragment(), NewItemContract.View {
 
     @SuppressLint("CheckResult")
     override fun showBigKinds(kindList: ArrayList<BigKind>) {
-        log("showBigKinds ${kindList[0].name}  ${kindList[0].selected}")
         val adapter = BigKindAdapter(kindList,
             {
                 newItem_icon.backgroundTintList = it.bgColorRes

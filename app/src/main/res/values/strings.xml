@@ -28,6 +28,7 @@
     <string name="move_to">移动到</string>
     <string name="delete">删除</string>
     <string name="export">导出</string>
+    <string name="sta_title">账目统计</string>
 
     <!-- contentDescription -->
     <string name="cd_welcome">欢迎</string>
@@ -53,6 +54,7 @@
     <string name="menu_switch_book">切换账本</string>
     <string name="menu_auto_account">自动记账</string>
     <string name="menu_in_batches">批量管理</string>
+    <string name="menu_sta_switch">切换视图</string>
 
     <!-- Mine -->
     <string name="mine1">每日记账提醒</string>
