@@ -9,10 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.fmod.finaltest.MyApp
-import org.fmod.finaltest.bean.remote.Code
-import org.fmod.finaltest.bean.remote.LoginCode
-import org.fmod.finaltest.bean.remote.RegisterInfo
-import org.fmod.finaltest.bean.remote.UserInfo
+import org.fmod.finaltest.bean.remote.*
 import org.fmod.finaltest.helper.remote.api.ServiceProvider
 
 class RemoteHelper {
@@ -89,6 +86,12 @@ class RemoteHelper {
                 .observeOn(AndroidSchedulers.mainThread())
         }
 
+        fun changeName(token: String, name: String): Observable<NameCode> {
+            return ServiceProvider.mineService().rename(token, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+        }
+
         fun getUserInfo(token: String): Observable<UserInfo> {
             return ServiceProvider.mineService().getInfo(token)
                 .subscribeOn(Schedulers.io())
@@ -100,6 +103,12 @@ class RemoteHelper {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }*/
+
+        fun syncDealItem(params: Map<String, String>):Observable<TimeCode> {
+            return ServiceProvider.bookService().syncDealItem(params)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+        }
 
     }
 

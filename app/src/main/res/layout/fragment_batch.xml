@@ -44,7 +44,7 @@
             android:layout_marginStart="16dp"
             android:textColor="@color/colorTheme"
             android:textSize="16sp"
-            android:text="@string/move_to"
+            android:text="同步"
             android:enabled="false"
             />
 

@@ -1,5 +1,6 @@
 package org.fmod.finaltest.ui.mine
 
+import android.annotation.SuppressLint
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.bean.remote.Code
@@ -52,6 +53,45 @@ class MinePresenter(
                     toast("更改失败，请检查网络")
                 }
             })
+    }
+
+    @SuppressLint("CheckResult")
+    override fun loadInfo() {
+
+        if(MyApp.globalUser.state == 200) return
+
+        RemoteHelper.getUserInfo(MyApp.token)
+            .bindToLifecycle(mView)
+            .subscribe {
+                MyApp.globalUser = it
+                mView.showUserInfo(it)
+            }
+    }
+
+    @SuppressLint("CheckResult")
+    override fun changeName(name: String?) {
+
+        if(name.isNullOrBlank()) {
+            toast("新名字不能为空")
+            return
+        }
+
+        RemoteHelper.changeName(MyApp.token, name)
+            .bindToLifecycle(mView)
+            .doOnNext {
+                if(it.state != 200) {
+                    log("change name fail: ${it.state}")
+                    mView.changeNameFail()
+                }
+            }
+            .filter {
+                it.state == 200
+            }
+            .subscribe {
+                toast("修改成功")
+                MyApp.globalUser.name = it.name
+                mView.showUserInfo(MyApp.globalUser)
+            }
     }
 
 }

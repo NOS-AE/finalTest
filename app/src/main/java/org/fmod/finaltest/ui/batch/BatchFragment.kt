@@ -8,6 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_batch.*
 
 import org.fmod.finaltest.R
@@ -27,6 +31,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
@@ -68,7 +73,13 @@ class BatchFragment : BaseFragment(), BatchContract.View {
         }
 
         batch_moveTo.setOnClickListener {
-
+            Observable.timer(2L, TimeUnit.SECONDS)
+                .bindToLifecycle(this)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    toast("已同步到网络")
+                }
         }
 
         batch_export.setOnClickListener {

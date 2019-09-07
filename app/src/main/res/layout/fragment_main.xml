@@ -37,7 +37,7 @@
                     android:layout_width="84dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center"
-                    android:text="日常账本"
+                    android:text="通用账本"
                     android:textColor="@color/white"
                     android:gravity="center"
                     android:background="@drawable/bg_6dp_stroke_white"

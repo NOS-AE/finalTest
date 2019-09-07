@@ -46,5 +46,9 @@ class ServiceProvider {
             return retrofit.create(QQLoginService::class.java)
         }
 
+        fun bookService(): BookService {
+            return retrofit.create(BookService::class.java)
+        }
+
     }
 }

@@ -2,9 +2,12 @@ package org.fmod.finaltest.ui.mine
 
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import com.jakewharton.rxbinding3.view.clicks
 import com.rengwuxian.materialedittext.MaterialEditText
@@ -17,6 +20,7 @@ import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.R
 import org.fmod.finaltest.base.activity.BaseActivity
 import org.fmod.finaltest.base.fragment.BaseFragment
+import org.fmod.finaltest.bean.remote.UserInfo
 import org.fmod.finaltest.ui.login.LoginActivity
 import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.statusBarHeight
@@ -42,6 +46,10 @@ class MineFragment : BaseFragment(), MineContract.View {
 
     private lateinit var changPwdBuilder: AlertDialog.Builder
     private lateinit var tempChangePwDialog: AlertDialog
+
+    private lateinit var changeNameView: EditText
+    private lateinit var changeNameBuilder: AlertDialog.Builder
+    private var defaultName: String? = null
 
     override fun getLayoutId() = R.layout.fragment_mine
 
@@ -90,9 +98,20 @@ class MineFragment : BaseFragment(), MineContract.View {
                 }
             )
 
-        mine_edit_info.setOnClickListener {
-
-        }
+        mine_edit_info.clicks()
+            .throttleFirst(1L, TimeUnit.SECONDS)
+            .doOnNext {
+                if(changeNameView.parent != null) {
+                    (changeNameView.parent as ViewGroup).removeView(changeNameView)
+                }
+            }
+            .subscribe({
+                changeNameBuilder.create().show()
+            },
+                {
+                    toast("无法启动对话框")
+                    log(it.toString())
+                })
     }
 
     override fun initView() {
@@ -102,17 +121,26 @@ class MineFragment : BaseFragment(), MineContract.View {
             newPw = new_password
             oldPw = old_password
         }
+
         changPwdBuilder = AlertDialog.Builder(requireContext())
             .setTitle("更换密码")
-            .setPositiveButton("确定",null) /*{ dialog, _ ->
-
-                presenter.changePassword(
-                    oldPw.text?.toString(),
-                    newPw.text?.toString()
-                )
-            }*/
+            .setPositiveButton("确定",null)
             .setNegativeButton("取消",null)
             .setView(pwChangeDialogContent)
+
+        changeNameView = EditText(requireContext()).apply {
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+            layoutParams = lp
+            hint = "新用户名"
+        }
+        changeNameBuilder = AlertDialog.Builder(requireContext())
+            .setTitle("更换用户名")
+            .setPositiveButton("确定") { _, _ ->
+                defaultName = changeNameView.text.toString()
+                presenter.changeName(changeNameView.text.toString())
+            }
+            .setNegativeButton("取消",null)
+            .setView(changeNameView)
 
         mine_toolbar.run {
             layoutParams.height += statusBarHeight
@@ -123,6 +151,10 @@ class MineFragment : BaseFragment(), MineContract.View {
 
         mine_username.text = MyApp.globalUser.name
 
+    }
+
+    override fun afterInitView() {
+        presenter.loadInfo()
     }
 
     /* MineContract.View Methods */
@@ -145,4 +177,13 @@ class MineFragment : BaseFragment(), MineContract.View {
         }
     }
 
+    override fun showUserInfo(info: UserInfo) {
+        mine_username.text = info.name
+    }
+
+    //TODO 2001
+    override fun changeNameFail() {
+        mine_username.text = defaultName
+        toast("修改成功")
+    }
 }

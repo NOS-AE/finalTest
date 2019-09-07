@@ -39,6 +39,7 @@ class SplashActivity : BaseActivity(), SplashContract.View {
 
         presenter = SplashPresenter(this)
 
+        requestPermissions(permissions, 0)
         for(i in permissions) {
             if(checkSelfPermission(i) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(permissions, 0)
