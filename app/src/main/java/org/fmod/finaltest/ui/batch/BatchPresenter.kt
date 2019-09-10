@@ -36,19 +36,4 @@ class BatchPresenter(
             })
     }
 
-    @SuppressLint("CheckResult")
-    fun syncItem(dealItem: DealItem) {
-        val param = HashMap<String, String>().apply {
-            put("income", dealItem.isIncome.toString())
-            put("money", dealItem.money.toString())
-            put("currency", "¥")
-            put("type", dealItem.type)
-            put("remark", dealItem.remarks)
-            put("token", MyApp.token)
-        }
-        RemoteHelper.syncDealItem(param)
-            .subscribe {
-                toast("已同步到网络")
-            }
-    }
 }

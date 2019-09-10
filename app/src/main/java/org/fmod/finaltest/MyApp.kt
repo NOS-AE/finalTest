@@ -2,6 +2,7 @@ package org.fmod.finaltest
 
 import android.app.Application
 import android.content.Context
+import com.google.gson.annotations.Expose
 import me.yokeyword.fragmentation.Fragmentation
 import org.fmod.finaltest.bean.BigKind
 import org.fmod.finaltest.bean.Book
@@ -19,14 +20,11 @@ class MyApp : Application(){
     companion object{
         lateinit var appContext: Context
 
-        //由RemoteHelper内部赋值
+        //与用户无关，由RemoteHelper管理
         lateinit var token: String
 
-        //一个App只同时登录一个User
-        var globalUser = UserInfo().apply {
-            name = "未登录"
-            avatar = ""
-        }
+        //一个App一个User
+        var globalUser = UserInfo("未登录", "")
 
         //大分类（所有Item将引用此唯一列表中元素）
         lateinit var bigKinds: ArrayList<BigKind>

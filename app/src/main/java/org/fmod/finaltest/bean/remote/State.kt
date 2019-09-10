@@ -1,8 +1,6 @@
 package org.fmod.finaltest.bean.remote
 
-class Code {
-    var state = 0
-
+data class State(var state: Int) {
     override fun toString(): String {
         return "state: $state"
     }

@@ -6,8 +6,8 @@ import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import org.fmod.finaltest.base.abstracts.RemoteObserver
-import org.fmod.finaltest.bean.remote.Code
-import org.fmod.finaltest.bean.remote.RegisterInfo
+import org.fmod.finaltest.bean.remote.BaseRes
+import org.fmod.finaltest.bean.remote.State
 import org.fmod.finaltest.helper.remote.RemoteHelper
 import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.toast
@@ -31,8 +31,8 @@ class RegisterPresenter(
 
         RemoteHelper.sendCode(email)
             .bindToLifecycle(mView)
-            .subscribe(object: RemoteObserver<Code>() {
-                override fun onNext(t: Code) {
+            .subscribe(object: RemoteObserver<State>() {
+                override fun onNext(t: State) {
                     log(t.toString())
                     toast("验证码已发送，请在邮箱内查看")
                 }
@@ -65,16 +65,10 @@ class RegisterPresenter(
 
     override fun register() {
 
-        val info = HashMap<String, String>().apply {
-            put("email", email)
-            put("code", code)
-            put("password", password)
-        }
-
-        RemoteHelper.register(info)
+        RemoteHelper.register(email, code, password)
             .bindToLifecycle(mView)
-            .subscribe(object: RemoteObserver<RegisterInfo>() {
-                override fun onNext(t: RegisterInfo) {
+            .subscribe(object: RemoteObserver<State>() {
+                override fun onNext(t: State) {
                     mView.finishRegister()
                 }
 

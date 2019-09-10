@@ -3,7 +3,7 @@ package org.fmod.finaltest.ui.mine
 import android.annotation.SuppressLint
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import org.fmod.finaltest.MyApp
-import org.fmod.finaltest.bean.remote.Code
+import org.fmod.finaltest.bean.remote.State
 import org.fmod.finaltest.base.abstracts.RemoteObserver
 import org.fmod.finaltest.helper.pref.PreferenceHelper
 import org.fmod.finaltest.helper.remote.RemoteHelper
@@ -14,6 +14,8 @@ import org.fmod.finaltest.util.toplevel.toast
 class MinePresenter(
     private val mView: MineContract.View
 ): MineContract.Presenter {
+
+    private var hasLoadInfo = false
 
     override fun start() {
 
@@ -26,7 +28,7 @@ class MinePresenter(
             log("format wrong")
             return
         }
-        RemoteHelper.changePassword(MyApp.token, old, new)
+        RemoteHelper.changePassword(old, new)
             .bindToLifecycle(mView)
             .doOnNext {
                 log("${it.state}")
@@ -41,8 +43,8 @@ class MinePresenter(
             .filter {
                 it.state == 200 || it.state == 409
             }
-            .subscribe(object : RemoteObserver<Code>() {
-                override fun onNext(t: Code) {
+            .subscribe(object : RemoteObserver<State>() {
+                override fun onNext(t: State) {
                     PreferenceHelper.saveMailPw(new)
                     log("change pw finish")
                     mView.finishChangePw(true)
@@ -58,13 +60,13 @@ class MinePresenter(
     @SuppressLint("CheckResult")
     override fun loadInfo() {
 
-        if(MyApp.globalUser.state == 200) return
+        if (hasLoadInfo) return
 
-        RemoteHelper.getUserInfo(MyApp.token)
+        RemoteHelper.getUserInfo()
             .bindToLifecycle(mView)
             .subscribe {
-                MyApp.globalUser = it
-                mView.showUserInfo(it)
+                MyApp.globalUser = it.result
+                mView.showUserInfo(MyApp.globalUser)
             }
     }
 
@@ -76,7 +78,7 @@ class MinePresenter(
             return
         }
 
-        RemoteHelper.changeName(MyApp.token, name)
+        RemoteHelper.changeName(name)
             .bindToLifecycle(mView)
             .doOnNext {
                 if(it.state != 200) {
@@ -89,7 +91,7 @@ class MinePresenter(
             }
             .subscribe {
                 toast("修改成功")
-                MyApp.globalUser.name = it.name
+                MyApp.globalUser.name = name
                 mView.showUserInfo(MyApp.globalUser)
             }
     }

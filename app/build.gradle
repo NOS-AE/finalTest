@@ -36,27 +36,36 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    //POI
     implementation files('libs/poishadow-all.jar')
+    //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.1.0'
+    //RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
     implementation 'com.jakewharton.rxbinding3:rxbinding:3.0.0'
     implementation 'com.trello.rxlifecycle3:rxlifecycle-android-lifecycle-kotlin:3.0.0'
     implementation 'com.trello.rxlifecycle3:rxlifecycle-components:3.0.0'
+    //Fragmentation
     implementation 'me.yokeyword:fragmentationx-core:1.0.1'
+    //LeakCanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
-    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
-    implementation 'com.google.android.material:material:1.1.0-alpha09'
+    //LitePal
     implementation 'org.litepal.android:kotlin:3.0.0'
-    implementation 'com.contrarywind:Android-PickerView:4.1.7'
+    //Tencent User
     implementation files('libs/open_sdk_r6140_lite.jar')
+    //EventBus (@Subscriber methods can be indexed for which the subscriber AND event class are public)
     implementation 'org.greenrobot:eventbus:3.1.1'
-    // @Subscriber methods can be indexed for which the subscriber AND event class are public
     kapt 'org.greenrobot:eventbus-annotation-processor:3.1.1'
 
+    //UI
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
+    implementation 'com.contrarywind:Android-PickerView:4.1.7'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 }
 

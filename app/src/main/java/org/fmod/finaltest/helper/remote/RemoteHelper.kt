@@ -10,7 +10,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.bean.remote.*
+import org.fmod.finaltest.helper.json.JsonHelper
 import org.fmod.finaltest.helper.remote.api.ServiceProvider
+import org.fmod.finaltest.util.toplevel.networkLog
 
 class RemoteHelper {
 
@@ -26,89 +28,142 @@ class RemoteHelper {
         /* QQ Field */
 
         private val remoteQQ = RemoteQQ()
-
+        /**
+         * 初始化QQ
+         *
+         * @param context
+         */
         fun init(context: Context) {
             remoteQQ.init(context)
         }
 
+        /**
+         * 打开QQ登录界面
+         *
+         * @param activity 建立在activity之上打开
+         * @param scope 要访问用户的信息域
+         * @param uiListener 登录回调
+         */
         fun loginQQ(activity : Activity, scope: String, uiListener: IUiListener) {
             remoteQQ.login(activity, scope, uiListener)
         }
 
-        fun getQQUserInfo(any: Any?, context: Context): Observable<UserInfo> {
+        /**
+         * 获取QQ用户信息
+         *
+         * @param any QQ登录后的信息
+         * @param context
+         */
+        fun getQQUserInfo(any: Any?, context: Context): Observable<QUserInfo> {
             return remoteQQ.getQQUserInfo(any, context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
         }
 
+        /**
+         * 退出QQ登录
+         *
+         * @param context
+         */
         fun logoutQQ(context: Context) {
             remoteQQ.logoutQQ(context)
         }
 
-        //Backend for QQ
-        fun loginQQ(openId: String): Observable<LoginCode> {
-            return ServiceProvider.qqLoginService().login(openId)
+        /* Backend for QQ */
+        /**
+         * QQ用户登录
+         */
+        fun loginQQ(): Observable<BaseRes<Login>> {
+            return ServiceProvider.qqLoginService().login(RemoteQQ.getOpenId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
-                    MyApp.token = it.token
+                    JsonHelper.toJson(it)
                 }
         }
 
-        fun uploadQQInfo(info: Map<String, String>): Observable<Code> {
-            return ServiceProvider.qqLoginService().uploadInfo(info)
+        /**
+         * 上传QQ用户的信息到后端
+         */
+        fun uploadQQInfo(name: String, avatar: String): Observable<State> {
+            return ServiceProvider.qqLoginService().uploadInfo(MyApp.token, name, avatar)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }
 
         /* Register Field */
-
-        fun sendCode(email: String): Observable<Code> {
+        /**
+         * 注册发送验证码
+         *
+         * @param email
+         */
+        fun sendCode(email: String): Observable<State> {
             return ServiceProvider.registerService().sendCode(email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }
 
-        fun register(info: Map<String, String>): Observable<RegisterInfo> {
-            return ServiceProvider.registerService().register(info)
+        /**
+         * 用户注册
+         *
+         * @param
+         */
+        fun register(email: String, code: String, password: String): Observable<State> {
+            return ServiceProvider.registerService().register(email, code, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }
 
-        fun login(email: String, password: String): Observable<LoginCode> {
+        /**
+         * 用户登录
+         */
+        fun login(email: String, password: String): Observable<BaseRes<Login>> {
             return ServiceProvider.loginService().login(email, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
-                    MyApp.token = it.token
+                    networkLog("Login: ${JsonHelper.toJson(it)}")
                 }
-
         }
 
-        fun changePassword(token: String, old: String, new: String): Observable<Code> {
-            return ServiceProvider.mineService().changePassword(token, old, new)
+        /**
+         * 用户修改密码
+         */
+        fun changePassword(old: String, new: String): Observable<State> {
+            return ServiceProvider.mineService().changePassword(MyApp.token, old, new)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }
 
-        fun changeName(token: String, name: String): Observable<NameCode> {
-            return ServiceProvider.mineService().rename(token, name)
+        /**
+         * 修改用户名
+         */
+        fun changeName(name: String): Observable<State> {
+            return ServiceProvider.mineService().changeName(MyApp.token, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }
 
-        fun getUserInfo(token: String): Observable<UserInfo> {
-            return ServiceProvider.mineService().getInfo(token)
+        /**
+         * 修改邮箱前发送验证码
+         */
+        fun changeEmailSendCode(email: String): Observable<State> {
+            return ServiceProvider.mineService().sendCode(MyApp.token, email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }
 
-        /*fun logout(): Observable<Code> {
-            return ServiceProvider.loginService().logout()
+        /**
+         * 修改邮箱
+         */
+        fun changeEmail(email: String, code: String): Observable<State> {
+            return ServiceProvider.mineService().changeEmail(MyApp.token, email, code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-        }*/
+        }
 
-        fun syncDealItem(params: Map<String, String>):Observable<TimeCode> {
-            return ServiceProvider.bookService().syncDealItem(params)
+        fun getUserInfo(): Observable<BaseRes<UserInfo>> {
+            return ServiceProvider.mineService().getInfo(MyApp.token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         }

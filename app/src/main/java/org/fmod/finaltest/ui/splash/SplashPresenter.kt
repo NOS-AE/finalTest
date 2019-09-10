@@ -3,7 +3,8 @@ package org.fmod.finaltest.ui.splash
 import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.base.abstracts.RemoteObserver
-import org.fmod.finaltest.bean.remote.LoginCode
+import org.fmod.finaltest.bean.remote.BaseRes
+import org.fmod.finaltest.bean.remote.Login
 import org.fmod.finaltest.helper.pref.PreferenceHelper
 import org.fmod.finaltest.helper.remote.RemoteHelper
 import org.fmod.finaltest.util.toplevel.log
@@ -48,8 +49,9 @@ class SplashPresenter(
                         .filter {
                             it.state == 200
                         }
-                        .subscribe(object : RemoteObserver<LoginCode>() {
-                            override fun onNext(t: LoginCode) {
+                        .subscribe(object : RemoteObserver<BaseRes<Login>>() {
+                            override fun onNext(t: BaseRes<Login>) {
+                                MyApp.token = t.result.token
                                 mView.finishLogin(true)
                             }
 
@@ -66,12 +68,13 @@ class SplashPresenter(
                         return
                     }
 
-                    RemoteHelper.loginQQ(openId)
+                    RemoteHelper.loginQQ()
                         .bindToLifecycle(mView)
-                        .subscribe(object : RemoteObserver<LoginCode>() {
+                        .subscribe(object : RemoteObserver<BaseRes<Login>>() {
 
-                            override fun onNext(t: LoginCode) {
+                            override fun onNext(t: BaseRes<Login>) {
                                 //因为已经有了qq登录的标志，所以通过qq自动登录时，肯定是非第一次登录，不需判断state
+                                MyApp.token = t.result.token
                                 mView.finishLogin(true)
                             }
 

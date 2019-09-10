@@ -9,8 +9,9 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.base.abstracts.RemoteObserver
-import org.fmod.finaltest.bean.remote.Code
-import org.fmod.finaltest.bean.remote.LoginCode
+import org.fmod.finaltest.bean.remote.BaseRes
+import org.fmod.finaltest.bean.remote.Login
+import org.fmod.finaltest.bean.remote.State
 import org.fmod.finaltest.helper.pref.PreferenceHelper
 import org.fmod.finaltest.helper.remote.RemoteHelper
 import org.fmod.finaltest.helper.remote.RemoteQQ
@@ -46,17 +47,18 @@ class LoginPresenter(
             .filter {
                 it.state == 200
             }
-            .subscribe(object : RemoteObserver<LoginCode>() {
-                override fun onNext(t: LoginCode) {
+            .subscribe(object : RemoteObserver<BaseRes<Login>>() {
+                override fun onNext(t: BaseRes<Login>) {
                     PreferenceHelper.saveMailLogin(email, password)
                     PreferenceHelper.setLoginWay(PreferenceHelper.wayEmail)
+                    MyApp.token = t.result.token
                     mView.finishLogin()
                     mView.hideProgress()
                 }
 
                 override fun onError(e: Throwable) {
                     super.onError(e)
-                    toast("网络好像有、问题")
+                    toast("请检查网络")
                     mView.hideProgress()
                 }
             })
@@ -68,8 +70,6 @@ class LoginPresenter(
      * 完成后进入其它界面，同步用户信息
      */
     override fun loginQQ(activity: Activity) {
-
-        mView.showProgress()
 
         RemoteHelper.loginQQ(activity, "all", mView.getQQListener())
 
@@ -83,35 +83,38 @@ class LoginPresenter(
          * 新被观察者（后端api）同时也为上游观察者，执行耗时操作，需要切换到io执行
          * 如果不是第一次登录，则用filter截断第二个api的发送
          */
+
+        mView.showProgress()
+
         RemoteHelper.getQQUserInfo(any, context)
             .bindToLifecycle(mView)
-            .doOnNext {
-                MyApp.globalUser = it
-            }
             .observeOn(Schedulers.io())
+            .doOnNext {
+                MyApp.globalUser.apply {
+                    name = it.name
+                    avatar = it.avatar
+                }
+            }
             .flatMap {
                 PreferenceHelper.setLoginWay(PreferenceHelper.wayQQ)
                 PreferenceHelper.saveQQLogin(RemoteQQ.getOpenId())
-                RemoteHelper.loginQQ(RemoteQQ.getOpenId())
+                RemoteHelper.loginQQ()
             }
             .doOnNext {
                 if(it.state == 200) {
                     mView.finishLogin()
                     mView.hideProgress()
                 }
+                MyApp.token = it.result.token
             }
             .filter {
                 it.state == 201
             }
             .flatMap {
-                val params = HashMap<String, String>().apply {
-                    put("username", MyApp.globalUser.name)
-                    put("token", MyApp.token)
-                }
-                RemoteHelper.uploadQQInfo(params)
+                RemoteHelper.uploadQQInfo(MyApp.globalUser.name, MyApp.globalUser.avatar)
             }
-            .subscribe(object: RemoteObserver<Code>() {
-                override fun onNext(t: Code) {
+            .subscribe(object: RemoteObserver<State>() {
+                override fun onNext(t: State) {
                     //2001 未调用第一个api（未登录）
                     mView.finishLogin()
                     mView.hideProgress()

@@ -3,7 +3,7 @@ package org.fmod.finaltest.helper.remote.api
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import org.fmod.finaltest.util.toplevel.timeOutSendCode
-import org.fmod.finaltest.util.toplevel.urlMainFrame
+import org.fmod.finaltest.util.toplevel.BaseUrl
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,11 +20,12 @@ class ServiceProvider {
             .build()
 
         private val gson = GsonBuilder()
+            .setPrettyPrinting()
             .setLenient()
             .create()
 
         private val retrofit = Retrofit.Builder()
-            .baseUrl(urlMainFrame)
+            .baseUrl(BaseUrl)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
@@ -44,10 +45,6 @@ class ServiceProvider {
 
         fun qqLoginService(): QQLoginService {
             return retrofit.create(QQLoginService::class.java)
-        }
-
-        fun bookService(): BookService {
-            return retrofit.create(BookService::class.java)
         }
 
     }

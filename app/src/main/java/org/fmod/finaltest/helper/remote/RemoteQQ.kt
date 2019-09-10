@@ -9,6 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.fmod.finaltest.base.abstracts.UiListener
+import org.fmod.finaltest.bean.remote.QUserInfo
 import org.fmod.finaltest.bean.remote.UserInfo
 import org.fmod.finaltest.helper.json.JsonHelper
 import org.fmod.finaltest.util.toplevel.toast
@@ -48,9 +49,9 @@ class RemoteQQ {
      * @param context 上下文
      *
      */
-    fun getQQUserInfo(any: Any?, context: Context): Observable<UserInfo> {
+    fun getQQUserInfo(any: Any?, context: Context): Observable<QUserInfo> {
 
-        return Observable.create<UserInfo> { emitter ->
+        return Observable.create<QUserInfo> { emitter ->
             val jsonObject = any as JSONObject
             try {
 
@@ -70,19 +71,16 @@ class RemoteQQ {
                 override fun onComplete(p0: Any?) {
                     super.onComplete(p0)
                     val json = (p0 as JSONObject).toString()
-                    val info = JsonHelper.convert<UserInfo>(json)
+                    val info = JsonHelper.convert<QUserInfo>(json)
                     emitter.onNext(info)
                 }
             })
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-
     }
 
 
     fun logoutQQ(context: Context) {
-        if(sTencent.isSessionValid){
+        if(sTencent.isSessionValid) {
             sTencent.logout(context)
         }
     }
