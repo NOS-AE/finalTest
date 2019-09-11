@@ -39,8 +39,6 @@ class BatchFragment : BaseFragment(), BatchContract.View {
 
     companion object {
         fun newInstance() = BatchFragment()
-        
-        fun remoteTest(){}
     }
 
     lateinit var presenter: BatchContract.Presenter
