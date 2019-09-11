@@ -140,10 +140,6 @@ class BatchFragment : BaseFragment(), BatchContract.View {
         }
     }
 
-    private fun getSelectedItems() = dealItems.filter {
-        it.selected
-    }
-
     private fun deleteSelectedItems() {
         dealItems.removeAll {
             if(it.selected) {
