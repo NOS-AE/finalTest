@@ -7,7 +7,8 @@ import com.tencent.connect.common.Constants
 import com.tencent.tauth.Tencent
 import org.fmod.finaltest.R
 import org.fmod.finaltest.base.activity.BaseActivity
-import org.fmod.finaltest.helper.pref.PreferenceHelper
+import org.fmod.finaltest.helper.pref.user.LoginWay
+import org.fmod.finaltest.manager.DataManager
 
 class LoginActivity : BaseActivity() {
     /*override fun beforeSetContentView() {
@@ -19,11 +20,6 @@ class LoginActivity : BaseActivity() {
             }
         }
     }*/
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        PreferenceHelper.setLoginWay(PreferenceHelper.wayNoLogin)
-    }
 
     private lateinit var loginFragment: LoginFragment
 

@@ -12,9 +12,10 @@ import org.fmod.finaltest.base.abstracts.RemoteObserver
 import org.fmod.finaltest.bean.remote.BaseRes
 import org.fmod.finaltest.bean.remote.Login
 import org.fmod.finaltest.bean.remote.State
-import org.fmod.finaltest.helper.pref.PreferenceHelper
+import org.fmod.finaltest.helper.pref.user.LoginWay
 import org.fmod.finaltest.helper.remote.RemoteHelper
 import org.fmod.finaltest.helper.remote.RemoteQQ
+import org.fmod.finaltest.manager.DataManager
 import org.fmod.finaltest.util.toplevel.toast
 
 class LoginPresenter(
@@ -25,7 +26,7 @@ class LoginPresenter(
     private lateinit var password: String
 
     override fun start() {
-
+        DataManager.loginWay = LoginWay.NO_LOGIN
     }
 
     override fun prepareLogin(context: Context) {
@@ -49,11 +50,13 @@ class LoginPresenter(
             }
             .subscribe(object : RemoteObserver<BaseRes<Login>>() {
                 override fun onNext(t: BaseRes<Login>) {
-                    PreferenceHelper.saveMailLogin(email, password)
-                    PreferenceHelper.setLoginWay(PreferenceHelper.wayEmail)
+                    DataManager.email = email
+                    DataManager.password = password
+                    DataManager.loginWay = LoginWay.EMAIL
                     MyApp.token = t.result.token
                     mView.finishLogin()
                     mView.hideProgress()
+
                 }
 
                 override fun onError(e: Throwable) {
@@ -96,9 +99,9 @@ class LoginPresenter(
                 }
             }
             .flatMap {
-                PreferenceHelper.setLoginWay(PreferenceHelper.wayQQ)
-                PreferenceHelper.saveQQLogin(RemoteQQ.getOpenId())
-                RemoteHelper.loginQQ()
+                DataManager.loginWay = LoginWay.QQ
+                DataManager.qqId = RemoteQQ.getOpenId()
+                RemoteHelper.loginQQ(RemoteQQ.getOpenId())
             }
             .doOnNext {
                 if(it.state == 200) {

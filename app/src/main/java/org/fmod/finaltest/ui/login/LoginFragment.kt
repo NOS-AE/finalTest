@@ -26,10 +26,13 @@ class LoginFragment: BaseFragment(), LoginContract.View {
     }
 
     lateinit var presenter: LoginContract.Presenter
-
     private var loading = false
-
     lateinit var qqListener: UiListener
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        presenter.start()
+    }
 
     override fun getLayoutId() = R.layout.fragment_login
 

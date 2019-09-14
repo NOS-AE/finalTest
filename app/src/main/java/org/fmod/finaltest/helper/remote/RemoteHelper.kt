@@ -73,8 +73,8 @@ class RemoteHelper {
         /**
          * QQ用户登录
          */
-        fun loginQQ(): Observable<BaseRes<Login>> {
-            return ServiceProvider.qqLoginService().login(RemoteQQ.getOpenId())
+        fun loginQQ(openId: String): Observable<BaseRes<Login>> {
+            return ServiceProvider.qqLoginService().login(openId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {

@@ -24,7 +24,7 @@ class RemoteQQ {
 
         private lateinit var sTencent: Tencent
 
-        fun getOpenId() = sTencent.openId
+        fun getOpenId(): String = sTencent.openId
     }
 
 

@@ -2,14 +2,13 @@ package org.fmod.finaltest
 
 import android.app.Application
 import android.content.Context
-import com.google.gson.annotations.Expose
 import me.yokeyword.fragmentation.Fragmentation
 import org.fmod.finaltest.bean.BigKind
 import org.fmod.finaltest.bean.Book
 import org.fmod.finaltest.bean.remote.UserInfo
 import org.fmod.finaltest.helper.local.LocalHelper
-import org.fmod.finaltest.helper.pref.PreferenceHelper
 import org.fmod.finaltest.helper.remote.RemoteHelper
+import org.fmod.finaltest.manager.DataManager
 import org.fmod.finaltest.util.toplevel.networkLog
 import org.fmod.finaltest.util.toplevel.statusBarHeight
 import org.greenrobot.eventbus.EventBus
@@ -71,8 +70,8 @@ class MyApp : Application(){
 
     private fun initDb() {
         LitePal.initialize(this)
-        if(PreferenceHelper.isFirstApp()){
-            PreferenceHelper.setFirstApp(false)
+        if(DataManager.firstLaunch){
+            DataManager.firstLaunch = false
             LocalHelper.firstApp()
         }
         LocalHelper.init()

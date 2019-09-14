@@ -5,8 +5,8 @@ import com.trello.rxlifecycle3.android.lifecycle.kotlin.bindToLifecycle
 import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.bean.remote.State
 import org.fmod.finaltest.base.abstracts.RemoteObserver
-import org.fmod.finaltest.helper.pref.PreferenceHelper
 import org.fmod.finaltest.helper.remote.RemoteHelper
+import org.fmod.finaltest.manager.DataManager
 import org.fmod.finaltest.util.toplevel.log
 import org.fmod.finaltest.util.toplevel.toast
 
@@ -45,7 +45,7 @@ class MinePresenter(
             }
             .subscribe(object : RemoteObserver<State>() {
                 override fun onNext(t: State) {
-                    PreferenceHelper.saveMailPw(new)
+                    DataManager.password = new
                     log("change pw finish")
                     mView.finishChangePw(true)
                 }
@@ -94,6 +94,10 @@ class MinePresenter(
                 MyApp.globalUser.name = name
                 mView.showUserInfo(MyApp.globalUser)
             }
+    }
+
+    override fun logout() {
+        DataManager.clearUserPref()
     }
 
 }

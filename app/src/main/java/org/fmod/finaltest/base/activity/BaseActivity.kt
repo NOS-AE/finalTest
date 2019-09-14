@@ -1,5 +1,6 @@
 package org.fmod.finaltest.base.activity
 
+import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Color
@@ -143,11 +144,22 @@ abstract class BaseActivity: RxAppCompatActivity(), ISupportActivity, IBaseUnive
      *          要传递的参数
      * @param anim
      *          是否启用默认自定义anim动画（淡出淡入），false则使用默认系统定义的动画
-     */
-    fun <T>startActivity(toActivity: Class<T>, anim: Boolean = false,
+     */ //TODO 替换为 inline fun
+    protected fun <T>startActivity(toActivity: Class<T>, anim: Boolean = false,
                                    bundle: Bundle? = null
                                    ) {
         val intent = Intent(this, toActivity)
+        if(bundle != null){
+            intent.putExtra(PARAM_BUNDLE, bundle)
+        }
+        startActivity(intent)
+        if(anim){
+            overridePendingTransition(DEFAULT_ENTER_ANIM, DEFAULT_EXIT_ANIM)
+        }
+    }
+
+    inline fun <reified T: Activity>startActivity(anim: Boolean = false, bundle: Bundle? = null) {
+        val intent = Intent(this, T::class.java)
         if(bundle != null){
             intent.putExtra(PARAM_BUNDLE, bundle)
         }

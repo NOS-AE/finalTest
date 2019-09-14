@@ -2,7 +2,6 @@ package org.fmod.finaltest.ui.mine
 
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -15,10 +14,8 @@ import kotlinx.android.synthetic.main.dialog_chang_password.view.*
 import kotlinx.android.synthetic.main.fragment_mine.*
 import kotlinx.android.synthetic.main.mine1.*
 import kotlinx.android.synthetic.main.mine4.*
-import okhttp3.*
 import org.fmod.finaltest.MyApp
 import org.fmod.finaltest.R
-import org.fmod.finaltest.base.activity.BaseActivity
 import org.fmod.finaltest.base.fragment.BaseFragment
 import org.fmod.finaltest.bean.remote.UserInfo
 import org.fmod.finaltest.ui.login.LoginActivity
@@ -53,9 +50,6 @@ class MineFragment : BaseFragment(), MineContract.View {
 
     override fun getLayoutId() = R.layout.fragment_mine
 
-    //TODO test change pw
-    val client = OkHttpClient()
-
     @SuppressLint("CheckResult")
     override fun setListener() {
         mine1.setOnClickListener {
@@ -67,7 +61,17 @@ class MineFragment : BaseFragment(), MineContract.View {
         }
 
         mine_logout.setOnClickListener {
-            (activity as BaseActivity).startActivity(LoginActivity::class.java)
+            AlertDialog.Builder(requireContext())
+                .setTitle("注销")
+                .setMessage("确认退出当前账号?")
+                .setPositiveButton("确定") { _, _ ->
+                    presenter.logout()
+                    //TODO 替换成 inline fun
+                    startActivity(LoginActivity::class.java)
+                }
+                .setNegativeButton("取消", null)
+                .show()
+
         }
 
 

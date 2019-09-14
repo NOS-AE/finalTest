@@ -23,6 +23,8 @@ interface MineContract {
         fun changeName(name: String?)
 
         fun loadInfo()
+
+        fun logout()
     }
 
 }
